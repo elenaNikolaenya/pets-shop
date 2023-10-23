@@ -84,3 +84,62 @@ const items = [
     img: "./img/12.jpeg",
   },
 ];
+
+//part 1
+
+const cardTemplate = document.querySelector('#item-template');
+const container = document.querySelector('#shop-items');
+
+function makeCardByTemplate(imgSrc, tagsArr, itemTitle, itemDescription, itemPrice) {
+  const card = cardTemplate.content.cloneNode(true);
+
+  card.querySelector('img').src = imgSrc;
+  
+  tagsArr.forEach(function(item) {  
+    const tag = document.createElement('div');
+    tag.classList.add('tag');    
+    tag.textContent = item;
+    card.querySelector('.tags').append(tag);
+  })  
+
+  card.querySelector('h1').textContent = itemTitle;
+  card.querySelector('p').textContent = itemDescription;
+  card.querySelector('.price').textContent = itemPrice;
+  return card;
+}
+
+
+items.forEach(function(item) {
+  const {title, description, tags, price, img} = item; 
+  const itemCard = makeCardByTemplate(img, tags, title, description, price);
+  container.append(itemCard);
+});
+
+//part 2
+
+const button = document.querySelector('#search-btn');
+const searchInput = document.querySelector('#search-input');
+const notFound = document.querySelector('#nothing-found');
+
+function searchItems() {
+  const searchQuery = searchInput.value.trim().toLowerCase();
+  let somethingRendered = false;
+
+  container.innerHTML = '';
+  notFound.textContent = '';  
+
+  items.forEach(function(item) {        
+    if (item['title'].toLowerCase().includes(searchQuery)) {
+      const {title, description, tags, price, img} = item;
+      const itemCard = makeCardByTemplate(img, tags, title, description, price);
+      container.append(itemCard);
+      somethingRendered = true;
+    }           
+  });
+
+  if (!somethingRendered) {
+    notFound.textContent = "Ничего не найдено";
+  };
+};
+
+button.addEventListener('click', searchItems);
